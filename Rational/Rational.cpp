@@ -4,7 +4,7 @@
 using namespace std;
 
 const double EPS = 1E-19;
-const int INT_MAX = 0x7fffffff;
+
 // constructors
 Rational::Rational() {
   numer = 0;
