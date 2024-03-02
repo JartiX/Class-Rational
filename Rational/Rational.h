@@ -83,8 +83,7 @@ public:
 
 };
 
-double num_sqrt(int number);
+Rational abs(Rational r);
 
-void quadratic_equation(Rational a, Rational b, Rational c);
 
 #endif
