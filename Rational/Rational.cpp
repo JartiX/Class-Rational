@@ -1,9 +1,11 @@
 #include <iostream>
 #include "Rational.h"
+#include "../Round/Round.h"
 
 using namespace std;
-
-const double EPS = 1E-19;
+const int NEPS = 0.00000001;
+Rational EPS(1, 1000);
+const int EPSILON = 15;
 
 // constructors
 Rational::Rational() {
@@ -17,13 +19,18 @@ Rational::Rational(int number) {
 }
 
 Rational::Rational(double number) {
-  denom = 1;
-  number = int(number * 100+0.5)/double(100); // округляем дабл, чтобы избавиться от слишком больших дробей
-  while(number - (int)number != 0) {
-    number *= 10;
-    denom *= 10;
-  }
-  numer = number;
+    int exp;
+    double mant = std::frexp(number, &exp);
+    if (exp - EPSILON < 0)
+    {
+        numer = static_cast<int>(mant * (1 << EPSILON));
+        denom = 1 << -(exp - EPSILON);
+    }
+    else
+    {
+        numer = static_cast<int>(mant * (1 << EPSILON) * (1 << (exp - EPSILON)));
+        denom = 1;
+    }
   simplify();
 }
 
@@ -46,6 +53,7 @@ void Rational::simplify() { // упрощаем дробь по алгоритм
   int nod = num1 + num2; // одно из чисел всегда 0, поэтому складывая находим НОД
   numer /= abs(nod);
   denom /= abs(nod);
+
   
 }
 
@@ -60,34 +68,25 @@ Rational Rational::to_same_denom(const Rational& r) {
   return res;
 }
 
-double num_sqrt(int number) {
-  bool is_negative = false;
-  if (number < 0) { // numer может быть отрицательным, поэтому в таком случае выносим минус
-    number = -number;
-    is_negative = true;
-  }
-  double x = 1, nx;
-  for (;;) {
-    nx = (x + number / x) / 2;
-    if (abs(x - nx) < EPS)  break;
-    x = nx;
-  }
-  x = int(x*100+0.5)/double(100); // находим число с точностью до 2 знаков
-  if (is_negative) {
-    return -x;
-  } return x;
-}
-
 Rational Rational::rational_sqrt() {
-  double a, b;
-  // Находим корни числителя и знаменателя
-  a = num_sqrt(numer);
-  b = num_sqrt(denom);
-  // делаем из них дроби
-  Rational aa(a);
-  Rational bb(b);
-  // получаем новую дробь aa(числитель) / bb(значенатель)
-  return aa / bb;
+    bool is_negative = false;
+    Rational temp(*this);
+    if (temp.numer < 0) {
+        temp.numer = -temp.numer;
+        is_negative = true;
+    }
+    Rational x = 1;
+    for (;;) {
+        Rational nx((x + temp / x) / 2);
+        nx = round(nx);
+        if (abs(x-nx) < EPS) { 
+            break;
+        }
+        x = nx;
+    }
+    if (is_negative) {
+        return -x;
+    } return x;
 }
 
 Rational Rational::pow(int x) { // возвести дробь в целочисленную степень
@@ -99,25 +98,6 @@ Rational Rational::pow(int x) { // возвести дробь в целочис
   return res;
 }
 
-void quadratic_equation(Rational a, Rational b, Rational c) {
-  // Rational*x*x+Rational*x+Rational;
-  // d = b^2 - 4*a*c
-  // x1 = (-b + sqrt(d)) / (2*a)
-  // x2 = (-b - sqrt(d)) / (2*a)
-  Rational d = b.pow(2) - a * c * 4; // дискриминант
-  if (d < 0) {
-    throw "No real roots";
-  }
-  if (a == 0) { // если неполное квадратное уравнение
-    Rational x = -c / b;
-    cout << "x = (" << x << ")" << endl;
-    return ;
-  }
-  Rational x1 = (-b + d.rational_sqrt()) / (a * 2);
-  Rational x2 = (-b - d.rational_sqrt()) / (a * 2);
-  cout << "x1 = (" << x1 << ")" << endl;
-  cout << "x2 = (" << x2 << ")" << endl;
-}
 
 // =, +=, -=, *=, /=
 Rational& Rational::operator =(const Rational& r) {
@@ -139,7 +119,7 @@ Rational& Rational::operator -=(const Rational& r) {
   return (*this += (-r));
 }
 Rational& Rational::operator *=(const Rational& r) {
-  if (numer > INT_MAX / abs(r.numer+EPS) or denom > INT_MAX / r.denom) {
+  if (numer > INT_MAX / abs(r.numer+NEPS) or denom > INT_MAX / r.denom) {
     throw "Overflow";
   }
   numer *= r.numer;
@@ -378,13 +358,20 @@ bool Rational::operator >=(double number) const {
 
 
 
-// int, double
+// int, double, abs
 Rational::operator int() const {
   return numer / denom;
 }
 Rational::operator double() const {
   return ((double)numer) / denom;
 }
+Rational abs(Rational r) {
+    Rational temp(r);
+    temp.numer = abs(temp.numer);
+
+    return temp;
+}
+
 
 // cin, cout
 istream& operator >>(istream& in, Rational& r) {
