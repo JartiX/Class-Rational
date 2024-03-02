@@ -1,5 +1,8 @@
 #include <iostream>
 #include "Rational/Rational.h"
+#include "Quadratic_equation/quadratic_equation.h"
+#include "Round/Round.h"
+#include "Sqrt/sqrt.h"
 using namespace std;
 
 int main() {
@@ -7,7 +10,7 @@ int main() {
   // Test constuctors
   Rational r1(5);
   cout << "Testing Rational constructor with int argument (5): " << r1 << endl;
-  Rational r2(3.14);
+  Rational r2(1.625);
   cout << "Testing Rational constructor with double argument (3,14): " << r2 << endl;
   Rational a(1, 2), b(1, 6);
   cout << "a = " << a << ", b = " << b << endl;
