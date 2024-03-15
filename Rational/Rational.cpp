@@ -21,13 +21,11 @@ Rational::Rational(int number) {
 Rational::Rational(double number) {
     int exp;
     double mant = std::frexp(number, &exp);
-    if (exp - EPSILON < 0)
-    {
+    if (exp - EPSILON < 0) {
         numer = static_cast<int>(mant * (1 << EPSILON));
         denom = 1 << -(exp - EPSILON);
     }
-    else
-    {
+    else {
         numer = static_cast<int>(mant * (1 << EPSILON) * (1 << (exp - EPSILON)));
         denom = 1;
     }
@@ -77,12 +75,17 @@ Rational Rational::rational_sqrt() {
     }
     Rational x = 1;
     for (;;) {
-        Rational nx((x + temp / x) / 2);
-        nx = round(nx);
-        if (abs(x-nx) < EPS) { 
-            break;
+        try {
+            Rational nx((x + temp / x) / 2);
+            nx = round(nx);
+            if (abs(x - nx) < EPS) {
+                break;
+            }
+            x = nx;
         }
-        x = nx;
+        catch (const char* error) {
+            cerr << error;
+        }
     }
     if (is_negative) {
         return -x;
