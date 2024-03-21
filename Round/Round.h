@@ -5,5 +5,7 @@
 using namespace std;
 
 Rational round(Rational r);
+Rational chain_round(Rational r);
+Rational constructFromContinuedFraction(Rational arr[], int size);
 
 #endif

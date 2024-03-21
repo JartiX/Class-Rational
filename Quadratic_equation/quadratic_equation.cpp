@@ -17,7 +17,6 @@ void quadratic_equation(Rational a, Rational b, Rational c) {
         cout << "x = (" << x << ")" << endl;
         return;
     }
-    cout << "d= " << d << " SQRT = " << d.rational_sqrt() << endl;
     Rational x1 = (-b + d.rational_sqrt()) / (a * 2);
     Rational x2 = (-b - d.rational_sqrt()) / (a * 2);
     cout << "x1 = (" << x1 << ")" << endl;

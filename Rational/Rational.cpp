@@ -51,19 +51,15 @@ void Rational::simplify() { // упрощаем дробь по алгоритм
   int nod = num1 + num2; // одно из чисел всегда 0, поэтому складывая находим НОД
   numer /= abs(nod);
   denom /= abs(nod);
-
-  
 }
 
 Rational Rational::to_same_denom(const Rational& r) {
-  Rational res(*this);
   if (numer > INT_MAX / r.denom or denom > INT_MAX / r.denom) {
     throw "Overflow";
   }
-  res.numer *= r.denom;
-  res.denom *= r.denom;
+  numer *= r.denom;
+  denom *= r.denom;
 
-  return res;
 }
 
 Rational Rational::rational_sqrt() {
@@ -74,22 +70,22 @@ Rational Rational::rational_sqrt() {
         is_negative = true;
     }
     Rational x = 1;
+    Rational nx;
     for (;;) {
         try {
-            Rational nx((x + temp / x) / 2);
-            nx = round(nx);
+            nx = (x + temp / x) / 2;
             if (abs(x - nx) < EPS) {
-                break;
+                if (is_negative) {
+                    return -nx;
+                } return nx;
             }
+            nx = chain_round(nx);
             x = nx;
         }
         catch (const char* error) {
             cerr << error;
         }
     }
-    if (is_negative) {
-        return -x;
-    } return x;
 }
 
 Rational Rational::pow(int x) { // возвести дробь в целочисленную степень
