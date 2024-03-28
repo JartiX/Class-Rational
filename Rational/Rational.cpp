@@ -4,9 +4,9 @@
 
 using namespace std;
 const int NEPS = 0.00000001;
-Rational EPS(1, 1000);
+Rational EPS(1, 2000);
 const int EPSILON = 15;
-
+const int ARR_SIZE = 100;
 // constructors
 Rational::Rational() {
   numer = 0;
@@ -71,21 +71,25 @@ Rational Rational::rational_sqrt() {
     }
     Rational x = 1;
     Rational nx;
-    for (;;) {
+    Rational array[ARR_SIZE];
+    int index = 0;
+    for (int i = 0; i < 20; i++) {
         try {
+            array[index++] = x;
             nx = (x + temp / x) / 2;
             if (abs(x - nx) < EPS) {
-                if (is_negative) {
-                    return -nx;
-                } return nx;
+                break;
             }
-            nx = chain_round(nx);
             x = nx;
         }
         catch (const char* error) {
-            cerr << error;
+            x = chain_round(array[index-1]);
+            array[index--] = Rational(0, 1);
         }
     }
+    if (is_negative) {
+        return -nx;
+    } return nx;
 }
 
 Rational Rational::pow(int x) { // возвести дробь в целочисленную степень
@@ -106,7 +110,9 @@ Rational& Rational::operator =(const Rational& r) {
   return *this;
 }
 Rational& Rational::operator +=(const Rational& r) {
-  if (numer > INT_MAX / r.denom or r.numer > INT_MAX / denom or denom > INT_MAX / r.denom) {
+    unsigned long long int check = abs(long(numer)) * long(r.denom) + abs(long(r.numer)) * long(denom);
+  if (numer > INT_MAX / r.denom or r.numer > INT_MAX / denom or denom > INT_MAX / r.denom or
+      INT_MAX < check) {
     throw "Overflow";
   }
   numer = (numer * r.denom + r.numer * denom);
@@ -299,22 +305,10 @@ bool Rational::operator >(const Rational& r) const {
   return !(*this <= r);
 }
 bool Rational::operator <=(const Rational& r) const {
-  Rational res(*this);
-  Rational res_1(r);
-
-  res.to_same_denom(r);
-  res_1.to_same_denom(*this);
-
-  return (res.numer <= res_1.numer);
+  return (numer * r.denom <= r.numer * denom);
 }
 bool Rational::operator >=(const Rational& r) const {
-  Rational res(*this);
-  Rational res_1(r);
-
-  res.to_same_denom(r);
-  res_1.to_same_denom(*this);
-
-  return (res.numer >= res_1.numer);
+  return (numer * r.denom >= r.numer * denom);
 }
 
 bool Rational::operator ==(int number) const {

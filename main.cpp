@@ -120,10 +120,10 @@ int main() {
   //Rational c_copy = c;
   //cout << "copy c: " << c_copy << endl;
 
-  //// Test rational_sqrt
-  //Rational d(9, 4);
-  //Rational sqrt_result = d.rational_sqrt();
-  //cout << "Testing rational_sqrt function with 9/4: " << sqrt_result << endl;
+  // Test rational_sqrt
+  Rational d(49, 9);
+  Rational sqrt_result = d.rational_sqrt();
+  cout << "Testing rational_sqrt function with " << d << ": " << sqrt_result << endl;
 
   //// Test rational pow 
   //Rational pow_result = c.pow(3);
@@ -134,18 +134,18 @@ int main() {
   //double sqrt_res = num_sqrt(numb);
   //cout << "Testing num_sqrt function with num = " << numb << ": " << sqrt_res << endl;
 
-  // Test quadratic equation
-  Rational aa(1, 2), bb(2, 1), cc(-3, 1);
-  cout << "Testing quadratic_equation function with a = " << aa << ", b = " << bb << ", c = " << cc << endl;
-  quadratic_equation(aa, bb, cc);
+  //// Test quadratic equation
+  //Rational aa(1, 2), bb(2, 1), cc(-3, 1);
+  //cout << "Testing quadratic_equation function with a = " << aa << ", b = " << bb << ", c = " << cc << endl;
+  //quadratic_equation(aa, bb, cc);
 
-  // Test incompleted quadratic equation
-  Rational aaa(0);
-  cout << "Testing uncompleted quadratic_equation function with a = " << aaa << ", b = " << bb << ", c = " << cc << endl;
-  quadratic_equation(aaa, bb, cc);
+  //// Test incompleted quadratic equation
+  //Rational aaa(0);
+  //cout << "Testing uncompleted quadratic_equation function with a = " << aaa << ", b = " << bb << ", c = " << cc << endl;
+  //quadratic_equation(aaa, bb, cc);
 
-  // Test ContinuedFractionRound
-  Rational k(12352, 21);
-  k = chain_round(k);
-  cout << "Continued Fraction Round: " << k;
+  //// Test ContinuedFractionRound
+  //Rational k(12352, 21);
+  //k = chain_round(k);
+  //cout << "Continued Fraction Round: " << k;
 }

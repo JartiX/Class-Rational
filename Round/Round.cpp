@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-Rational EPSILONN(1, 1000000);
+Rational EPSILONN(1, 5000);
 const int MAX_SIZE = 100;
 
 Rational round(Rational r) {
@@ -56,9 +56,12 @@ Rational chain_round(Rational r) {
             }
         }
 
-        result = constructFromContinuedFraction(continuedFractional, size);
-
-        return result + int_part;
+        if (size != 0) {
+            result = constructFromContinuedFraction(continuedFractional, size);
+            return result + int_part;
+        } else {
+            return int_part;
+        }
 
     }
     catch (const char* ex) {
